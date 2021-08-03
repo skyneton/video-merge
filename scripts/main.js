@@ -43,8 +43,8 @@ const getVideos = files => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const video = window.a = document.createElement("video");
-    video.defaultPlaybackRate = 8;
+    const video = document.createElement("video");
+    // video.defaultPlaybackRate = 8;
 
     const audioContext = new AudioContext();
     const audioSource = audioContext.createMediaElementSource(video);
