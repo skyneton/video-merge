@@ -129,7 +129,7 @@ const getVideos = files => {
         }
 
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    }, 10);
+    }, 7);
 }
 
 const saveAs = (url, name="name.mp4") => {
