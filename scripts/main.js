@@ -50,7 +50,6 @@ const getVideos = files => {
     const ctx = canvas.getContext("2d", {alpha: false});
 
     const video = document.createElement("video");
-    video.defaultPlaybackRate = 16;
 
     const audioContext = new AudioContext();
     const audioSource = audioContext.createMediaElementSource(video);
