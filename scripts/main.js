@@ -24,17 +24,11 @@ const getMaxPixels = () => {
 const supportOption = () => {
     if(MediaRecorder.isTypeSupported('video/mp4; codecs="avc1.424028, mp4a.40.2"')) return 'video/mp4; codecs="avc1.424028, mp4a.40.2"';
     if(MediaRecorder.isTypeSupported("video/mp4")) return "video/mp4";
-    // if(MediaRecorder.isTypeSupported("video/webm;codecs=H264,vp9,opus")) return "video/webm;codecs=H264,vp9,opus";
-    // if(MediaRecorder.isTypeSupported("video/webm;codecs=H264,opus")) return "video/webm;codecs=H264,opus";
-    // if(MediaRecorder.isTypeSupported("video/webm;codecs=H264")) return "video/webm;codecs=H264";
-    // if(MediaRecorder.isTypeSupported("video/webm;codecs=avc1")) return "video/webm;codecs=avc1";
     if(MediaRecorder.isTypeSupported("video/webm;codecs=vp8,vp9,opus")) return "video/webm;codecs=vp8,vp9,opus";
     if(MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")) return "video/webm;codecs=vp9,opus";
     if(MediaRecorder.isTypeSupported("video/webm;codecs=vp9")) return "video/webm;codecs=vp9";
     if(MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")) return "video/webm;codecs=vp8,opus";
-    if(MediaRecorder.isTypeSupported("video/webm;codecs=vp8")) return "video/webm;codecs=vp8";
-    if(MediaRecorder.isTypeSupported("video/webm;codecs=opus")) return "video/webm;codecs=opus";
-    return "video/webm";
+    return "video/webm;codecs=vp8";
 }
 
 const getVideos = files => {
@@ -47,9 +41,10 @@ const getVideos = files => {
     if(arr.length <= 0) return;
 
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d", {alpha: false});
+    const ctx = canvas.getContext("2d");
 
-    const video = document.createElement("video");
+    const video = window.a = document.createElement("video");
+    video.defaultPlaybackRate = 8;
 
     const audioContext = new AudioContext();
     const audioSource = audioContext.createMediaElementSource(video);
@@ -63,7 +58,7 @@ const getVideos = files => {
     const mimeType = supportOption();
 
     const recorder = new MediaRecorder(destination.stream, {mimeType});
-    canvas.captureStream(200).getTracks().forEach(e => {
+    canvas.captureStream(500).getTracks().forEach(e => {
         recorder.stream.addTrack(e);
     });
 
@@ -91,15 +86,13 @@ const getVideos = files => {
     }
 
     recorder.ondataavailable = e => {
-        console.log(e);
-        chunks.push(e.data);
+        if(e.data && e.data.size > 0) chunks.push(e.data);
     };
 
     recorder.onstop = () => {
         if(currentIndex >= arr.length && chunks.length > 0) {
-            // const url = URL.createObjectURL(new Blob(chunks, {"type": mimeType}));
-            const url = URL.createObjectURL(chunks[0]);
-            const name = `${arr[0].name}.${mimeType.split(";")[0].substring(6)}`;
+            const url = URL.createObjectURL(new Blob(chunks, {"type": "video/mp4"}));
+            const name = `${arr[0].name}.mp4`;
             saveAs(url, name);
             URL.revokeObjectURL(url);
         }
